@@ -1,0 +1,16 @@
+# Environment Variables
+.env
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+.venv/
+
+# Personal Resume PDFs
+*.pdf
+
+# VS Code Settings
+.vscode/
