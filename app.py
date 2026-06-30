@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from utils.pdf_parser import extract_text_from_pdf
 from utils.gemini_analyzer import analyze_resume
+from utils.text_cleaner import parse_gemini_response
 
 load_dotenv()
 
@@ -40,12 +41,13 @@ def analyze():
 
     try:
         resume_text = extract_text_from_pdf(file_path)
-        result = analyze_resume(resume_text, jd_text)
+        raw_result = analyze_resume(resume_text, jd_text)
+        parsed_result = parse_gemini_response(raw_result)
     finally:
         if os.path.exists(file_path):
             os.remove(file_path)
 
-    return render_template("result.html", raw_result=result)
+    return render_template("result.html", result=parsed_result)
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
