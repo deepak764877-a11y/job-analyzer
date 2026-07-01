@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+body{
+    background:#eef4ff;
+    font-family:'Poppins',sans-serif;
+}
+
+.navbar-gradient{
+    background:linear-gradient(135deg,#2563EB,#1D4ED8);
+    box-shadow:0 4px 15px rgba(0,0,0,.12);
+}
+
+.navbar-brand{
+    font-size:1.3rem;
+    font-weight:700;
+    letter-spacing:.5px;
+}
+
+.glass-card{
+    background:#fff;
+    border-radius:16px;
+    padding:24px;
+    box-shadow:0 4px 20px rgba(0,0,0,.06);
+    transition:.25s ease;
+}
+
+.glass-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+
+.score-card{
+    background:#2563EB;
+    border-radius:16px;
+    padding:30px;
+    color:#fff;
+    text-align:center;
+}
+
+.score-number{
+    font-size:3.5rem;
+    font-weight:700;
+    line-height:1;
+}
+
+.score-text{
+    margin-top:8px;
+    font-size:.9rem;
+    opacity:.9;
+}
+
+.skill-chip{
+    display:inline-block;
+    padding:7px 15px;
+    border-radius:25px;
+    font-size:.85rem;
+    font-weight:500;
+    margin:5px;
+}
+
+.chip-green{
+    background:#e8f5e9;
+    color:#2e7d32;
+}
+
+.chip-red{
+    background:#ffebee;
+    color:#c62828;
+}
+
+.chip-blue{
+    background:#e3f2fd;
+    color:#1565c0;
+}
+
+.section-title{
+    font-size:1rem;
+    font-weight:600;
+    margin-bottom:18px;
+}
+
+ul{
+    padding-left:18px;
+}
+
+li{
+    margin-bottom:8px;
+}
+
+.btn-analyze{
+    background:#2563EB;
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:12px;
+    font-weight:600;
+    transition:.25s ease;
+}
+
+.btn-analyze:hover{
+    background:#1D4ED8;
+    color:#fff;
+    transform:translateY(-2px);
+}
+
+.form-control{
+    border-radius:10px;
+    padding:10px;
+    border:1px solid #d8dce5;
+}
+
+.form-control:focus{
+    border-color:#2563EB;
+    box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
+}
+
+.chart-container{
+    position:relative;
+    height:250px;
+}
+
+@media(max-width:992px){
+
+    .score-number{
+        font-size:2.8rem;
+    }
+
+    .glass-card{
+        margin-bottom:20px;
+    }
+
+}
