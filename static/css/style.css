@@ -32,13 +32,29 @@ body{
 .score-card{
     background:#2563EB;
     border-radius:16px;
-    padding:30px;
+    padding:24px;
     color:#fff;
-    text-align:center;
+    min-height:300px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    transition:.25s ease;
 }
 
-.score-number{
-    font-size:3.5rem;
+.score-card:hover{
+    transform:translateY(-4px);
+}
+
+#scoreChart{
+    width:170px !important;
+    height:170px !important;
+    display:block;
+    margin:0 auto;
+}
+
+.score-value{
+    font-size:2.2rem;
     font-weight:700;
     line-height:1;
 }
@@ -120,13 +136,10 @@ li{
 }
 
 @media(max-width:992px){
-
-    .score-number{
-        font-size:2.8rem;
+    .score-value{
+        font-size:1.8rem;
     }
-
     .glass-card{
         margin-bottom:20px;
     }
-
 }
