@@ -1,6 +1,9 @@
+import re
+
+
 def parse_gemini_response(raw_text):
     sections = {
-        "fit_score": "",
+        "fit_score": 0,
         "matched_skills": [],
         "missing_skills": [],
         "strengths": [],
@@ -10,45 +13,58 @@ def parse_gemini_response(raw_text):
     }
 
     current_key = None
-    lines = raw_text.split("\n")
 
-    for line in lines:
+    for line in raw_text.splitlines():
+
         line = line.strip()
+
         if not line:
             continue
 
-        if line.upper().startswith("FIT_SCORE"):
+        upper = line.upper()
+
+        if upper.startswith("FIT_SCORE") or upper.startswith("FIT SCORE"):
             current_key = "fit_score"
-            if ":" in line:
-                sections["fit_score"] = line.split(":", 1)[1].strip()
-        elif line.upper().startswith("MATCHED_SKILLS"):
+
+            match = re.search(r"\d+", line)
+            if match:
+                sections["fit_score"] = int(match.group())
+
+        elif upper.startswith("MATCHED_SKILLS") or upper.startswith("MATCHED SKILLS"):
             current_key = "matched_skills"
+
             if ":" in line:
-                sections["matched_skills"] = line.split(":", 1)[1].strip()
-        elif line.upper().startswith("MISSING_SKILLS"):
+                skills = line.split(":", 1)[1]
+                sections["matched_skills"].extend(
+                    s.strip() for s in skills.split(",") if s.strip()
+                )
+
+        elif upper.startswith("MISSING_SKILLS") or upper.startswith("MISSING SKILLS"):
             current_key = "missing_skills"
+
             if ":" in line:
-                sections["missing_skills"] = line.split(":", 1)[1].strip()
-        elif line.upper().startswith("STRENGTHS"):
+                skills = line.split(":", 1)[1]
+                sections["missing_skills"].extend(
+                    s.strip() for s in skills.split(",") if s.strip()
+                )
+
+        elif upper.startswith("STRENGTHS"):
             current_key = "strengths"
-        elif line.upper().startswith("WEAKNESSES"):
+
+        elif upper.startswith("WEAKNESSES"):
             current_key = "weaknesses"
-        elif line.upper().startswith("RED_FLAGS"):
+
+        elif upper.startswith("RED_FLAGS") or upper.startswith("RED FLAGS"):
             current_key = "red_flags"
-        elif line.upper().startswith("RECOMMENDATION"):
+
+        elif upper.startswith("RECOMMENDATION"):
             current_key = "recommendation"
+
         else:
-            if current_key in ["strengths", "weaknesses", "red_flags", "recommendation"]:
-                sections[current_key].append(line.lstrip("-• "))
 
-    if isinstance(sections["matched_skills"], str):
-        sections["matched_skills"] = [s.strip() for s in sections["matched_skills"].split(",") if s.strip()]
-    if isinstance(sections["missing_skills"], str):
-        sections["missing_skills"] = [s.strip() for s in sections["missing_skills"].split(",") if s.strip()]
+            item = line.lstrip("-•* ").strip()
 
-    try:
-        sections["fit_score"] = int(sections["fit_score"])
-    except (ValueError, TypeError):
-        sections["fit_score"] = 0
+            if item and current_key in sections and isinstance(sections[current_key], list):
+                sections[current_key].append(item)
 
     return sections

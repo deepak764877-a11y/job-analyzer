@@ -18,7 +18,7 @@ if (scoreElement && chartCanvas) {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: true,
             cutout: "75%",
             plugins: {
                 legend: { display: false },

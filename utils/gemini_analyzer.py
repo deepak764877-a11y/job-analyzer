@@ -6,19 +6,47 @@ load_dotenv()
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
+
 def analyze_resume(resume_text, jd_text):
+
     prompt = f"""
-Compare this resume with the job description.
+You are an ATS Resume Analyzer.
 
-FIT_SCORE: (integer 0-100 only, example: 78)
-MATCHED_SKILLS: (comma separated)
-MISSING_SKILLS: (comma separated)
-STRENGTHS: (bullet points)
-WEAKNESSES: (bullet points)
-RED_FLAGS: (bullet points)
-RECOMMENDATION: (bullet points)
+Compare the resume with the job description and return ONLY the response in the exact format below.
 
-No markdown. No extra text. FIT_SCORE number only.
+FIT_SCORE: 85
+MATCHED_SKILLS: Python, Flask, SQL
+MISSING_SKILLS: React, Docker
+
+STRENGTHS:
+- Point 1
+- Point 2
+- Point 3
+
+WEAKNESSES:
+- Point 1
+- Point 2
+
+RED_FLAGS:
+- Point 1
+- Point 2
+
+RECOMMENDATION:
+- Point 1
+- Point 2
+- Point 3
+
+Rules:
+1. FIT_SCORE must be an integer between 0 and 100.
+2. MATCHED_SKILLS must be comma separated.
+3. MISSING_SKILLS must be comma separated.
+4. Use "-" for every bullet point.
+5. Do not use Markdown.
+6. Do not include code blocks.
+7. Do not add explanations.
+8. Start the response with FIT_SCORE.
+9. End the response after RECOMMENDATION.
+10. If any section has no items, write "None".
 
 Resume:
 {resume_text}
@@ -26,11 +54,10 @@ Resume:
 Job Description:
 {jd_text}
 """
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
-        return response.text
-    except Exception as e:
-        return f"Error: {e}"
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
+
+    return response.text.strip()

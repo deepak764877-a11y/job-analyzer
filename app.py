@@ -10,21 +10,25 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "jobfit-secret")
+app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
+
 @app.route("/analyze", methods=["POST"])
 def analyze():
+
     file = request.files.get("resume")
     jd_text = request.form.get("jd", "")
 
     if not file or file.filename == "":
-        flash("Please upload a resume PDF", "danger")
+        flash("Please upload a Resume PDF.", "danger")
         return redirect(url_for("home"))
 
     if not file.filename.lower().endswith(".pdf"):
@@ -41,13 +45,31 @@ def analyze():
 
     try:
         resume_text = extract_text_from_pdf(file_path)
+
         raw_result = analyze_resume(resume_text, jd_text)
+
         parsed_result = parse_gemini_response(raw_result)
+
+        return render_template(
+            "result.html",
+            result=parsed_result
+        )
+
+    except Exception as e:
+        print(e)
+        flash("Something went wrong while analyzing the resume.", "danger")
+        return redirect(url_for("home"))
+
     finally:
         if os.path.exists(file_path):
             os.remove(file_path)
 
-    return render_template("result.html", result=parsed_result)
+
+@app.errorhandler(413)
+def file_too_large(e):
+    flash("File too large. Maximum size is 5 MB.", "danger")
+    return redirect(url_for("home"))
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

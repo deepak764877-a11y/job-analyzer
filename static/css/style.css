@@ -1,21 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
+Style · CSS
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+ 
 body{
     background:#eef4ff;
     font-family:'Poppins',sans-serif;
 }
-
 .navbar-gradient{
     background:linear-gradient(135deg,#2563EB,#1D4ED8);
     box-shadow:0 4px 15px rgba(0,0,0,.12);
 }
-
 .navbar-brand{
     font-size:1.3rem;
     font-weight:700;
     letter-spacing:.5px;
 }
-
+.text-brand{
+    color:#2563EB;
+}
 .glass-card{
     background:#fff;
     border-radius:16px;
@@ -23,48 +25,40 @@ body{
     box-shadow:0 4px 20px rgba(0,0,0,.06);
     transition:.25s ease;
 }
-
 .glass-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 10px 30px rgba(0,0,0,.12);
+    transform:translateY(-3px);
+    box-shadow:0 8px 24px rgba(0,0,0,.08);
 }
-
 .score-card{
     background:#2563EB;
     border-radius:16px;
     padding:24px;
     color:#fff;
-    min-height:300px;
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
     transition:.25s ease;
 }
-
 .score-card:hover{
-    transform:translateY(-4px);
+    transform:translateY(-2px);
 }
-
 #scoreChart{
-    width:170px !important;
-    height:170px !important;
+    width:170px;
+    height:170px;
     display:block;
     margin:0 auto;
 }
-
 .score-value{
     font-size:2.2rem;
     font-weight:700;
     line-height:1;
 }
-
 .score-text{
     margin-top:8px;
     font-size:.9rem;
     opacity:.9;
 }
-
 .skill-chip{
     display:inline-block;
     padding:7px 15px;
@@ -73,36 +67,29 @@ body{
     font-weight:500;
     margin:5px;
 }
-
 .chip-green{
     background:#e8f5e9;
     color:#2e7d32;
 }
-
 .chip-red{
     background:#ffebee;
     color:#c62828;
 }
-
 .chip-blue{
     background:#e3f2fd;
     color:#1565c0;
 }
-
 .section-title{
     font-size:1rem;
     font-weight:600;
     margin-bottom:18px;
 }
-
 ul{
     padding-left:18px;
 }
-
 li{
     margin-bottom:8px;
 }
-
 .btn-analyze{
     background:#2563EB;
     color:#fff;
@@ -112,29 +99,93 @@ li{
     font-weight:600;
     transition:.25s ease;
 }
-
 .btn-analyze:hover{
     background:#1D4ED8;
     color:#fff;
     transform:translateY(-2px);
 }
-
 .form-control{
     border-radius:10px;
     padding:10px;
     border:1px solid #d8dce5;
 }
-
 .form-control:focus{
     border-color:#2563EB;
     box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
 }
-
+.upload-box{
+    width:100%;
+    border:2px dashed #cfd8ff;
+    border-radius:14px;
+    background:#f8f9ff;
+    padding:28px 20px;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    transition:.25s ease;
+    cursor:pointer;
+}
+.upload-box:hover{
+    background:#eef4ff;
+    border-color:#2563EB;
+}
+.upload-icon{
+    font-size:2.4rem;
+    color:#2563EB;
+}
+.upload-text{
+    font-weight:600;
+    color:#2d2d2d;
+}
+.upload-hint{
+    font-size:.85rem;
+    color:#6c757d;
+}
+.feature-box{
+    background:#f8f9ff;
+    border:1px solid #e0e7ff;
+    border-radius:14px;
+    padding:18px;
+    height:100%;
+    transition:.25s ease;
+}
+.feature-box:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px rgba(0,0,0,.08);
+}
+.feature-icon{
+    width:52px;
+    height:52px;
+    border-radius:12px;
+    background:#2563EB;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:1.3rem;
+    margin-bottom:12px;
+}
+.feature-box h5{
+    font-size:1rem;
+    font-weight:600;
+    margin-bottom:8px;
+}
+.feature-box p{
+    color:#6c757d;
+    font-size:.9rem;
+    margin-bottom:0;
+}
 .chart-container{
     position:relative;
     height:250px;
 }
-
+footer{
+    margin-top:30px;
+    border-top:1px solid #dbe4ff;
+    color:#6c757d;
+}
 @media(max-width:992px){
     .score-value{
         font-size:1.8rem;
@@ -142,4 +193,11 @@ li{
     .glass-card{
         margin-bottom:20px;
     }
+    .feature-box{
+        margin-bottom:10px;
+    }
+    .navbar-brand{
+        font-size:1.1rem;
+    }
 }
+ 
