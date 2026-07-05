@@ -1,78 +1,102 @@
-document.addEventListener("DOMContentLoaded", () => {
-
-    const scoreElement = document.querySelector(".gauge-value");
-    const chartCanvas = document.getElementById("scoreChart");
-
-    if (!scoreElement || !chartCanvas || typeof Chart === "undefined") {
-        return;
-    }
-
-    let score = parseInt(scoreElement.textContent) || 0;
-    score = Math.max(0, Math.min(score, 100));
-
-    const ctx = chartCanvas.getContext("2d");
-
-    let startColor, endColor;
-
-    if (score >= 85) {
-        startColor = "#22c55e";
-        endColor = "#10b981";
-    } else if (score >= 70) {
-        startColor = "#f59e0b";
-        endColor = "#fbbf24";
-    } else {
-        startColor = "#ef4444";
-        endColor = "#f87171";
-    }
-
-    const gradient = ctx.createLinearGradient(
-        0,
-        0,
-        chartCanvas.width,
-        chartCanvas.height
-    );
-
-    gradient.addColorStop(0, startColor);
-    gradient.addColorStop(1, endColor);
-
-    new Chart(ctx, {
+console.log("Dashboard JS Loaded Successfully");
+ 
+const scoreElement = document.querySelector(".gauge-score-text");
+const chartCanvas = document.getElementById("scoreChart");
+ 
+if (scoreElement && chartCanvas && typeof Chart !== "undefined") {
+    let score = parseInt(scoreElement.innerText);
+    if (isNaN(score)) score = 0;
+ 
+    const needlePlugin = {
+        id: "needlePlugin",
+        afterDatasetsDraw(chart) {
+            const { ctx } = chart;
+            const meta = chart.getDatasetMeta(0);
+            const arc = meta.data[0];
+            if (!arc) return;
+ 
+            const cx = arc.x;
+            const cy = arc.y;
+            const outerRadius = arc.outerRadius;
+            const value = chart.needleValue || 0;
+            const max = 100;
+            const needleLength = outerRadius * 0.78;
+ 
+            const theta = Math.PI * (1 - value / max);
+            const tipX = cx + needleLength * Math.cos(theta);
+            const tipY = cy - needleLength * Math.sin(theta);
+ 
+            ctx.save();
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = "#ffffff";
+ 
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(tipX, tipY);
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "#f8fafc";
+            ctx.lineCap = "round";
+            ctx.stroke();
+ 
+            ctx.beginPath();
+            ctx.arc(cx, cy, 7, 0, Math.PI * 2);
+            ctx.fillStyle = "#f8fafc";
+            ctx.fill();
+ 
+            ctx.beginPath();
+            ctx.arc(tipX, tipY, 4, 0, Math.PI * 2);
+            ctx.fillStyle = "#fff";
+            ctx.fill();
+ 
+            ctx.restore();
+        }
+    };
+ 
+    const chart = new Chart(chartCanvas, {
         type: "doughnut",
-
         data: {
+            needleValue: 0,
             datasets: [{
-                data: [score, 100 - score],
-                backgroundColor: [
-                    gradient,
-                    "rgba(255,255,255,0.08)"
-                ],
+                data: [40, 30, 30],
+                backgroundColor: ["#ef4444", "#f59e0b", "#10b981"],
                 borderWidth: 0,
-                borderRadius: 14,
-                spacing: 3,
-                hoverOffset: 8
+                borderRadius: 8,
+                spacing: 4
             }]
         },
-
         options: {
+            rotation: -90,
+            circumference: 180,
+            cutout: "70%",
             responsive: true,
             maintainAspectRatio: false,
-            cutout: "78%",
-
-            animation: {
-                animateRotate: true,
-                animateScale: true,
-                duration: 1400,
-                easing: "easeOutQuart"
-            },
-
             plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    enabled: false
-                }
+                legend: { display: false },
+                tooltip: { enabled: false }
             }
-        }
+        },
+        plugins: [needlePlugin]
     });
-
-});
+ 
+    let current = 0;
+    function animateNeedle() {
+        current += (score - current) * 0.12;
+        if (Math.abs(score - current) < 0.5) current = score;
+ 
+        chart.needleValue = current;
+        chart.update("none");
+ 
+        if (current !== score) {
+            requestAnimationFrame(animateNeedle);
+        }
+    }
+    requestAnimationFrame(animateNeedle);
+}
+const downloadBtn = document.getElementById("downloadPdfBtn");
+if (downloadBtn) {
+    downloadBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.print();
+    });
+}
+ 

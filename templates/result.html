@@ -12,20 +12,23 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-
+ 
 <nav class="navbar-v2">
     <div class="container d-flex justify-content-between align-items-center">
         <span class="navbar-brand-v2">🎯 JobFit Analyzer</span>
         <a href="/" class="btn-analyze"><i class="bi bi-arrow-repeat me-2"></i>Analyze Another</a>
     </div>
 </nav>
-
+ 
 <div class="container py-4">
-
+ 
     <div class="hero-strip">
-        <div>
-            <span class="hero-tag">Analysis Complete</span>
+        <div class="hero-float-circle circle-1"></div>
+        <div class="hero-float-circle circle-2"></div>
+        <div class="hero-strip-inner">
+            <span class="hero-tag">Resume Analysis Complete</span>
             <h1 class="hero-strip-title">Your Resume Match Report</h1>
+            <p class="hero-strip-subtitle">AI-powered breakdown of how well your resume fits this role.</p>
         </div>
         <div class="hero-strip-score">
             <span class="hero-strip-percent">{{ result.fit_score }}%</span>
@@ -38,18 +41,20 @@
             {% endif %}
         </div>
     </div>
-
+ 
     <div class="row g-4 mb-4">
-        <div class="col-lg-4">
+        <div class="col-lg-4 fade-up" style="animation-delay:.05s">
             <div class="gauge-card">
                 <div class="gauge-wrap">
                     <canvas id="scoreChart"></canvas>
-                    <div class="gauge-center">
-                        <span class="gauge-value">{{ result.fit_score }}%</span>
-                        <span class="gauge-label">ATS Match</span>
-                    </div>
                 </div>
-
+                <div class="gauge-score-text">{{ result.fit_score }}%</div>
+                <div class="gauge-legend">
+                    <span class="legend-item"><span class="legend-dot dot-red"></span>Weak</span>
+                    <span class="legend-item"><span class="legend-dot dot-yellow"></span>Average</span>
+                    <span class="legend-item"><span class="legend-dot dot-green"></span>Strong</span>
+                </div>
+ 
                 {% if result.fit_score >= 85 %}
                     <p class="score-description">Your resume strongly matches this role.</p>
                 {% elif result.fit_score >= 70 %}
@@ -57,35 +62,37 @@
                 {% else %}
                     <p class="score-description">Add more relevant skills and experience.</p>
                 {% endif %}
-
-                <a href="#" class="btn-download"><i class="bi bi-download me-2"></i>Download Report</a>
+ 
+                <div class="download-group">
+                    <a href="#" id="downloadPdfBtn" class="btn-download"><i class="bi bi-file-earmark-pdf me-2"></i>Download PDF</a>
+                </div>
             </div>
         </div>
-
-        <div class="col-lg-8">
+ 
+        <div class="col-lg-8 fade-up" style="animation-delay:.1s">
             <div class="stat-grid-v2">
-                <div class="stat-pill">
+                <div class="stat-pill border-indigo">
                     <div class="stat-pill-icon icon-indigo"><i class="bi bi-graph-up-arrow"></i></div>
                     <div>
                         <div class="stat-pill-value">{{ result.fit_score }}%</div>
                         <div class="stat-pill-label">ATS Score</div>
                     </div>
                 </div>
-                <div class="stat-pill">
+                <div class="stat-pill border-emerald">
                     <div class="stat-pill-icon icon-emerald"><i class="bi bi-check-circle-fill"></i></div>
                     <div>
                         <div class="stat-pill-value">{{ result.matched_skills|length }}</div>
                         <div class="stat-pill-label">Matched Skills</div>
                     </div>
                 </div>
-                <div class="stat-pill">
+                <div class="stat-pill border-rose">
                     <div class="stat-pill-icon icon-rose"><i class="bi bi-x-circle-fill"></i></div>
                     <div>
                         <div class="stat-pill-value">{{ result.missing_skills|length }}</div>
                         <div class="stat-pill-label">Missing Skills</div>
                     </div>
                 </div>
-                <div class="stat-pill">
+                <div class="stat-pill border-amber">
                     <div class="stat-pill-icon icon-amber"><i class="bi bi-flag-fill"></i></div>
                     <div>
                         <div class="stat-pill-value">{{ result.red_flags|length }}</div>
@@ -95,9 +102,9 @@
             </div>
         </div>
     </div>
-
+ 
     <div class="row g-4 mb-4">
-        <div class="col-lg-6">
+        <div class="col-lg-6 fade-up" style="animation-delay:.15s">
             <div class="glass-card-v2">
                 <div class="card-header-v2">
                     <span><i class="bi bi-check-circle-fill text-emerald me-2"></i>Matched Skills</span>
@@ -114,11 +121,11 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-lg-6">
+ 
+        <div class="col-lg-6 fade-up" style="animation-delay:.2s">
             <div class="glass-card-v2">
                 <div class="card-header-v2">
-                    <span><i class="bi bi-x-circle-fill text-rose me-2"></i>Missing Skills</span>
+                    <span><i class="bi bi-exclamation-triangle-fill text-rose me-2"></i>Missing Skills</span>
                     <span class="card-count">{{ result.missing_skills|length }}</span>
                 </div>
                 <div class="mini-progress">
@@ -126,83 +133,122 @@
                 </div>
                 <div class="chip-row">
                     {% for skill in result.missing_skills %}
-                        <span class="skill-chip chip-red"><i class="bi bi-x-circle-fill me-1"></i>{{ skill }}</span>
+                        <span class="skill-chip chip-red"><i class="bi bi-exclamation-triangle-fill me-1"></i>{{ skill }}</span>
                     {% endfor %}
                 </div>
             </div>
         </div>
     </div>
-
+ 
     <div class="row g-4 mb-4">
-        <div class="col-lg-6">
+        <div class="col-lg-6 fade-up" style="animation-delay:.25s">
             <div class="glass-card-v2">
                 <div class="card-header-v2"><span><i class="bi bi-hand-thumbs-up-fill text-emerald me-2"></i>Strengths</span></div>
-                <div class="list-card-container">
-                    {% for item in result.strengths %}
-                        <div class="list-card success-card">
-                            <span class="list-num num-emerald">{{ loop.index }}</span>
-                            <span class="list-text">{{ item }}</span>
-                        </div>
-                    {% endfor %}
-                </div>
+                {% if result.strengths %}
+                    <div class="list-card-container">
+                        {% for item in result.strengths %}
+                            <div class="list-card success-card">
+                                <span class="list-num num-emerald">{{ loop.index }}</span>
+                                <span class="list-text">{{ item }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🤔</div>
+                        <p>No Strengths Identified</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
-
-        <div class="col-lg-6">
+ 
+        <div class="col-lg-6 fade-up" style="animation-delay:.3s">
             <div class="glass-card-v2">
                 <div class="card-header-v2"><span><i class="bi bi-exclamation-triangle-fill text-amber me-2"></i>Improvement Areas</span></div>
-                <div class="list-card-container">
-                    {% for item in result.weaknesses %}
-                        <div class="list-card warning-card">
-                            <span class="list-num num-amber">{{ loop.index }}</span>
-                            <span class="list-text">{{ item }}</span>
-                        </div>
-                    {% endfor %}
-                </div>
+                {% if result.weaknesses %}
+                    <div class="list-card-container">
+                        {% for item in result.weaknesses %}
+                            <div class="list-card warning-card">
+                                <span class="list-num num-amber">{{ loop.index }}</span>
+                                <span class="list-text">{{ item }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✨</div>
+                        <p>No Improvement Areas Found</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
-
+ 
     <div class="row g-4 mb-4">
-        <div class="col-lg-5">
+        <div class="col-lg-5 fade-up" style="animation-delay:.35s">
             <div class="glass-card-v2">
                 <div class="card-header-v2"><span><i class="bi bi-flag-fill text-rose me-2"></i>Red Flags</span></div>
-                <div class="list-card-container">
-                    {% for item in result.red_flags %}
-                        <div class="list-card danger-card">
-                            <span class="list-num num-rose">{{ loop.index }}</span>
-                            <span class="list-text">{{ item }}</span>
-                        </div>
-                    {% endfor %}
-                </div>
+ 
+                {% if result.red_flags|length == 0 %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎉</div>
+                        <p>No Red Flags Found</p>
+                    </div>
+                {% else %}
+                    <div class="list-card-container">
+                        {% for item in result.red_flags %}
+                            <div class="list-card danger-card">
+                                <span class="list-num num-rose">{{ loop.index }}</span>
+                                <span class="list-text">{{ item }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
         </div>
-
-        <div class="col-lg-7">
+ 
+        <div class="col-lg-7 fade-up" style="animation-delay:.4s">
             <div class="glass-card-v2">
                 <div class="card-header-v2"><span><i class="bi bi-lightbulb-fill text-indigo me-2"></i>AI Recommendations</span></div>
-                <div class="timeline">
-                    {% for item in result.recommendation %}
-                        <div class="timeline-item">
-                            <div class="timeline-marker">{{ loop.index }}</div>
-                            <div class="timeline-content">{{ item }}</div>
-                        </div>
-                    {% endfor %}
-                </div>
+                {% if result.recommendation %}
+                    <div class="timeline">
+                        {% for item in result.recommendation %}
+                            <div class="timeline-item">
+                                <div class="timeline-marker">{{ loop.index }}</div>
+                                <div class="timeline-content">{{ item }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>No Recommendations Available</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
-
-    <div class="quote-banner">
+ 
+    <div class="quote-banner fade-up" style="animation-delay:.45s">
         <i class="bi bi-quote"></i>
         <p>Success is where preparation and opportunity meet. Keep learning, keep building.</p>
     </div>
-
+ 
 </div>
-
+ 
+<footer class="footer-v2">
+    <div class="container">
+        <div class="footer-brand">🎯 JobFit Analyzer</div>
+        <div class="footer-stack">
+            <span>Python</span><span>Flask</span><span>Gemini AI</span><span>Chart.js</span><span>Bootstrap</span>
+        </div>
+        <div class="footer-version">Version 1.0</div>
+    </div>
+</footer>
+ 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-
+ 
 </body>
 </html>
