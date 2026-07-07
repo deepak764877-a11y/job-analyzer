@@ -14,3 +14,6 @@ venv/
 
 # VS Code Settings
 .vscode/
+
+database/
+*.db
