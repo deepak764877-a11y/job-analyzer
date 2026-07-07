@@ -2,9 +2,11 @@ import os
 from flask import Flask, render_template, request, redirect, flash, url_for
 from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
+
 from utils.pdf_parser import extract_text_from_pdf
 from utils.gemini_analyzer import analyze_resume
 from utils.text_cleaner import parse_gemini_response
+from utils.database import init_db, save_report
 
 load_dotenv()
 
@@ -14,6 +16,8 @@ app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+init_db()
 
 
 @app.route("/")
@@ -50,6 +54,8 @@ def analyze():
 
         parsed_result = parse_gemini_response(raw_result)
 
+        save_report(filename, parsed_result)
+
         return render_template(
             "result.html",
             result=parsed_result
@@ -72,4 +78,5 @@ def file_too_large(e):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
