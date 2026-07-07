@@ -35,4 +35,4 @@ http://127.0.0.1:5000
 Works best with text-based PDFs.
 Scanned resumes may give inconsistent results.
 ## Live Demo
-Coming Soon
+https://job-analyzer-dui5.onrender.com
